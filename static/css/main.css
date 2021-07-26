@@ -347,6 +347,35 @@ ul.costomer li a {
      padding-bottom: 90px;
 }
 
+/* ------- Here ----------- */
+
+.main-form p{
+     margin: 0;
+     padding: 10px;
+     font-weight: bold;
+ }
+
+ .main-form input{
+     width: 100%;
+     margin-bottom: 20px;
+ }
+ 
+ .main-form a {
+     background: #42c366;
+     color: #fff;
+     float: left;
+     font-size: 15px;
+     font-weight: 400;
+     border: solid #42c366 1px;
+     padding: 10px 77px;
+     margin: 57px 0px 0px 25px;
+}
+.main-form a:hover {
+     background: #000;
+     border: solid #000 1px;
+}
+
+/* --------- End ------------- */
 .text-bg {
      max-width: 426px;
      float: right;

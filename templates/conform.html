@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Conformation</title>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{% static 'images/loginLogo.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/conform.css' %}" type="text/css">
+    <script src="{% static 'js/script.js' %}"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="main_box">
+            {% if cand == 1 %}
+            <img src="{% static 'images/admk.png' %}" class="logo">
+            {% elif cand == 2 %}
+            <img src="{% static 'images/dmk.png' %}" class="logo">
+            {% elif cand == 3 %}
+            <img src="{% static 'images/bjp.png' %}" class="logo">
+            {% else %}
+            <img src="{% static 'images/avatar.png' %}" class="logo">
+            {% endif %}
+            <h1>Login</h1>
+            <form action="login" method="POST">
+                {% csrf_token %}
+                <p>Party Name</p>
+                {% if cand == 1 %}
+                <input type="text" name="party_name" placeholder="ADMK">
+                {% elif cand == 2 %}
+                <input type="text" name="party_name" placeholder="DMK">
+                {% elif cand == 3 %}
+                <input type="text" name="party_name" placeholder="BJP">
+                {% else %}
+                <input type="text" name="party_name" placeholder="">
+                {% endif %}
+                <p>Canditate Name</p>
+                <input type="text" name="canditate_name" placeholder="Enter Canditate Name">
+                <input type="submit" class="login_btn" value="Vote">
+            </form>
+        </div>
+        {% for message in messages %}
+        <h3>{{message}} </h3>
+        {%endfor%}
+    </div>
+</body>
+</html>
