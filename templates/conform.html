@@ -23,18 +23,26 @@
             <h1>Login</h1>
             <form action="login" method="POST">
                 {% csrf_token %}
-                <p>Party Name</p>
                 {% if cand == 1 %}
+                <p>Party Name</p>
                 <input type="text" name="party_name" placeholder="ADMK">
-                {% elif cand == 2 %}
-                <input type="text" name="party_name" placeholder="DMK">
-                {% elif cand == 3 %}
-                <input type="text" name="party_name" placeholder="BJP">
-                {% else %}
-                <input type="text" name="party_name" placeholder="">
-                {% endif %}
                 <p>Canditate Name</p>
-                <input type="text" name="canditate_name" placeholder="Enter Canditate Name">
+                <input type="text" name="canditate_name" placeholder="{{cand_name}}">
+                {% elif cand == 2 %}
+                <p>Party Name</p>
+                <input type="text" name="party_name" placeholder="DMK">
+                <p>Canditate Name</p>
+                <input type="text" name="canditate_name" placeholder="{{cand_name}}">
+                {% elif cand == 3 %}
+                <p>Party Name</p>
+                <input type="text" name="party_name" placeholder="BJP">
+                <p>Canditate Name</p>
+                <input type="text" name="canditate_name" placeholder="{{cand_name}}">
+                {% else %}
+                <p>Party Name</p>
+                <input type="text" name="party_name" placeholder="">
+                <p>Canditate Name</p>
+                {% endif %}
                 <input type="submit" class="login_btn" value="Vote">
             </form>
         </div>

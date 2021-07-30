@@ -44,8 +44,13 @@
                      </div>
                      <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
                         <ul class="costomer">
+                           {% if log == 1 %}
+                           <li><a>Hello, {{name}}</a></li>
+                           <li><a href="logout">Logout</a></li>
+                           {% else %}
                            <li><a href="userLogin">Login</a></li>
                            <li><a href="userRegister">Signup</a></li>
+                           {% endif %}
                            
                         </ul>
                      </div>

@@ -12,7 +12,7 @@
     <div class="main_box reg-box">
         <img src="{% static 'images/avatar.png' %}" class="logo">
         <h1>Register</h1>
-        <form action="register" method="POST">
+        <form action="userRegister" method="POST">
             {% csrf_token %}
             <p>First Name</p>
             <input type="text" name="first_name" placeholder="Enter First Name" />
