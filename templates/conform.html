@@ -21,7 +21,7 @@
             <img src="{% static 'images/avatar.png' %}" class="logo">
             {% endif %}
             <h1>Login</h1>
-            <form action="login" method="POST">
+            <form action="voteCast" method="POST">
                 {% csrf_token %}
                 {% if cand == 1 %}
                 <p>Party Name</p>
@@ -43,7 +43,7 @@
                 <input type="text" name="party_name" placeholder="">
                 <p>Canditate Name</p>
                 {% endif %}
-                <input type="submit" class="login_btn" value="Vote">
+                <input type="submit" class="login_btn" value="Vote" name="{{cand}}">
             </form>
         </div>
         {% for message in messages %}
