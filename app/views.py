@@ -34,10 +34,12 @@ def userLogin(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        userDetails = contract.functions.login(username, password).call()
+        userDetails = contract.functions.login(username, password).transact()
         print(userDetails)
         if(username==userDetails[0] and password == userDetails[5]):
             return redirect('vote')
+        else:
+            return render(request,'userLogin.html')
     else:
         return render(request,'userLogin.html')
 
