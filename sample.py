@@ -8,3 +8,4 @@ for i in lists:
     for j in i:
         print(j[0],j[1])
 print(lists)
+print(' ')
