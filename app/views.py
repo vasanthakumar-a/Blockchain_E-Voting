@@ -114,7 +114,8 @@ def main (request):
     if auth:
         return render(request, 'admin.html')
     else:
-        return render(request, 'admin.html',{'main_info':main_info,'n':len(accounts)})
+        for i in range(len(accounts)):
+            return render(request, 'admin.html',{'main_info':main_info,'n':len(accounts),'i':i})
 
 def authorize(request):
     global main_info
