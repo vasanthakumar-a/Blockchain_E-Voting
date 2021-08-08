@@ -1,4 +1,5 @@
 lists = []
+vas = []
 for i in range(2):
     lists.append([])
     for j in range(1):
