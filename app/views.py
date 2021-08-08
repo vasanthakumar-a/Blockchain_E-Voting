@@ -9,7 +9,7 @@ ganache_url = "http://127.0.0.1:7545"
 web3 = Web3(Web3.HTTPProvider(ganache_url))
 web3.eth.default_account = web3.eth.accounts[0]
 abi = json.loads('[{"constant":false,"inputs":[{"name":"voterIndex","type":"uint256"}],"name":"vote","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_first_name","type":"string"},{"name":"_last_name","type":"string"},{"name":"_email","type":"string"},{"name":"_username","type":"string"},{"name":"_phone_number","type":"string"},{"name":"_password","type":"string"}],"name":"register","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"auctionEnd","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"n","type":"uint256"}],"name":"result","outputs":[{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"canditates","outputs":[{"name":"name","type":"string"},{"name":"voteCount","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_username","type":"string"},{"name":"_password","type":"string"}],"name":"login","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"voter","type":"address"}],"name":"authorize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"candInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"nbOfVoters","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"end","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_name","type":"string"},{"name":"duraitonMinutes","type":"uint256"},{"name":"canditate1","type":"string"},{"name":"canditate2","type":"string"},{"name":"canditate3","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"name","type":"string"},{"indexed":false,"name":"voteCount","type":"uint256"}],"name":"ElectionResult","type":"event"}]')
-address = web3.toChecksumAddress("0x8A876759fADfe093Ea5669048bF33DE07EF86a3b")
+address = web3.toChecksumAddress("0x379ae1A39bA75AA692d14c0899e8aB68B65001A5")
 
 contract = web3.eth.contract(address=address, abi=abi)
 
@@ -20,6 +20,7 @@ cand_names = []
 userDetails = []
 main_info = []
 voteCount = []
+accounts = []
 
 def index(request):
     global userDetails
@@ -34,11 +35,12 @@ def userLogin(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        userDetails = contract.functions.login(username, password).transact()
+        userDetails = contract.functions.login(username, password).call()
         print(userDetails)
         if(username==userDetails[0] and password == userDetails[5]):
             return redirect('vote')
         else:
+            messages.info(request,'Username or Password is not Matching')
             return render(request,'userLogin.html')
     else:
         return render(request,'userLogin.html')
@@ -78,6 +80,10 @@ def adminLogin(request):
         if username == 'admin' and password == 'admin':
             adminLog = 1
             return redirect('main')
+        else:
+            adminLog = 0
+            messages.info(request,'Username or Password is not Matching')
+            return redirect('adminLogin')
     else:
         return render(request, 'adminLogin.html')
 
@@ -85,22 +91,30 @@ def main (request):
     global main_info
     global auth
     global adminLog
+    global accounts
     if adminLog:
+        accounts = web3.eth.accounts
         main_info = []
+        for i in accounts:
+            main_info.append([])
+        for j in range(len(accounts)):
+            web3.eth.default_account = web3.eth.accounts[j]
+            main_info[j].append(contract.functions.getInfo().call())
+            
         # for i in range(2):
         #     main_info.append([])
         #     for j in range(1):
         #         main_info[i].append(contract.functions.getInfo().call())
         #     print(i)
         web3.eth.default_account = web3.eth.accounts[0]
-        main_info = contract.functions.getInfo().call()
+        # main_info = contract.functions.getInfo().call()
         print(main_info,auth)
     else:
         return redirect('adminLogin')
     if auth:
         return render(request, 'admin.html')
     else:
-        return render(request, 'admin.html',{'main_info':main_info})
+        return render(request, 'admin.html',{'main_info':main_info,'n':len(accounts)})
 
 def authorize(request):
     global main_info
@@ -108,7 +122,7 @@ def authorize(request):
     print(main_info)
     print(auth)
     if main_info:
-        auth_hash = contract.functions.authorize(main_info[5]).transact()
+        auth_hash = contract.functions.authorize(main_info[0][0][5]).transact()
         web3.eth.waitForTransactionReceipt(auth_hash)
         auth = 1
     return redirect('main')
