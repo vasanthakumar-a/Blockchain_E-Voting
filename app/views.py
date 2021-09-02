@@ -9,7 +9,7 @@ ganache_url = "http://127.0.0.1:7545"
 web3 = Web3(Web3.HTTPProvider(ganache_url))
 web3.eth.default_account = web3.eth.accounts[0]
 abi = json.loads('[{"constant":false,"inputs":[{"name":"voterIndex","type":"uint256"}],"name":"vote","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_first_name","type":"string"},{"name":"_last_name","type":"string"},{"name":"_email","type":"string"},{"name":"_username","type":"string"},{"name":"_phone_number","type":"string"},{"name":"_password","type":"string"}],"name":"register","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"auctionEnd","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"n","type":"uint256"}],"name":"result","outputs":[{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"canditates","outputs":[{"name":"name","type":"string"},{"name":"voteCount","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_username","type":"string"},{"name":"_password","type":"string"}],"name":"login","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"voter","type":"address"}],"name":"authorize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"candInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"nbOfVoters","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"end","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_name","type":"string"},{"name":"duraitonMinutes","type":"uint256"},{"name":"canditate1","type":"string"},{"name":"canditate2","type":"string"},{"name":"canditate3","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"name","type":"string"},{"indexed":false,"name":"voteCount","type":"uint256"}],"name":"ElectionResult","type":"event"}]')
-address = web3.toChecksumAddress("0x379ae1A39bA75AA692d14c0899e8aB68B65001A5")
+address = web3.toChecksumAddress("0xfB6fA86D2c07F282b6631763Dac5A0c201cB5d0F")
 
 contract = web3.eth.contract(address=address, abi=abi)
 
@@ -93,20 +93,20 @@ def main (request):
     global adminLog
     global accounts
     if adminLog:
-        accounts = web3.eth.accounts
-        main_info = []
-        for i in accounts:
-            main_info.append([])
-        for j in range(len(accounts)):
-            web3.eth.default_account = web3.eth.accounts[j]
-            main_info[j].append(contract.functions.getInfo().call())
+        # accounts = web3.eth.accounts
+        # main_info = []
+        # for i in accounts:
+        #     main_info.append([])
+        # for j in range(len(accounts)):
+        #     web3.eth.default_account = web3.eth.accounts[j]
+        #     main_info[j].append(contract.functions.getInfo().call())
             
         # for i in range(2):
         #     main_info.append([])
         #     for j in range(1):
         #         main_info[i].append(contract.functions.getInfo().call())
         #     print(i)
-        web3.eth.default_account = web3.eth.accounts[0]
+        # web3.eth.default_account = web3.eth.accounts[0]
         # main_info = contract.functions.getInfo().call()
         print(main_info,auth)
     else:
@@ -114,8 +114,7 @@ def main (request):
     if auth:
         return render(request, 'admin.html')
     else:
-        for i in range(len(accounts)):
-            return render(request, 'admin.html',{'main_info':main_info,'n':len(accounts),'i':i})
+        return render(request, 'admin.html',{'main_info':main_info,'n':len(accounts)})
 
 def authorize(request):
     global main_info
@@ -127,6 +126,9 @@ def authorize(request):
         web3.eth.waitForTransactionReceipt(auth_hash)
         auth = 1
     return redirect('main')
+
+def autho(request):
+    return render(request,'autho.html')
 
 def end(request):
     res_hash = contract.functions.end().transact()
@@ -169,7 +171,10 @@ def conform1(request):
     cand_names = contract.functions.candInfo().call()
     print(cand_names)
     if userDetails:
-        return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[0]})
+        if auth:
+            return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[0]})
+        else:
+            return redirect('autho')
     else:
         return render(request, 'userLogin.html')
 
@@ -179,7 +184,10 @@ def conform2(request):
     cand = 2
     cand_names = contract.functions.candInfo().call()
     if userDetails:
-        return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[1]})
+        if auth:
+            return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[1]})
+        else:
+            return redirect('autho')
     else:
         return render(request, 'userLogin.html')
         
@@ -190,6 +198,9 @@ def conform3(request):
     cand = 3
     cand_names = contract.functions.candInfo().call()
     if userDetails:
-        return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[2]})
+        if auth:
+            return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[2]})
+        else:
+            return redirect('autho')
     else:
         return render(request, 'userLogin.html')

@@ -1,3 +1,4 @@
 from django.db import models
 
-# Create your models here.
+class address(models.Model):
+    voter_address = models.CharField(max_length=100)

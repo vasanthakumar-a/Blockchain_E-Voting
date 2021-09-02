@@ -16,4 +16,5 @@ urlpatterns=[
     path('conform1',views.conform1,name='conform1'),
     path('conform2',views.conform2,name='conform2'),
     path('conform3',views.conform3,name='conform3'),
+    path('autho',views.autho,name='autho'),
 ]
