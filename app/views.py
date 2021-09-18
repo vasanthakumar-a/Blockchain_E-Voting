@@ -1,3 +1,5 @@
+from logging import INFO
+from app.models import addressDB, authoDB
 from django.shortcuts import get_object_or_404, redirect, render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
@@ -8,8 +10,8 @@ import web3
 ganache_url = "http://127.0.0.1:7545"
 web3 = Web3(Web3.HTTPProvider(ganache_url))
 web3.eth.default_account = web3.eth.accounts[0]
-abi = json.loads('[{"constant":false,"inputs":[{"name":"voterIndex","type":"uint256"}],"name":"vote","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_first_name","type":"string"},{"name":"_last_name","type":"string"},{"name":"_email","type":"string"},{"name":"_username","type":"string"},{"name":"_phone_number","type":"string"},{"name":"_password","type":"string"}],"name":"register","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"auctionEnd","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"n","type":"uint256"}],"name":"result","outputs":[{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"canditates","outputs":[{"name":"name","type":"string"},{"name":"voteCount","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_username","type":"string"},{"name":"_password","type":"string"}],"name":"login","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"voter","type":"address"}],"name":"authorize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"candInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"nbOfVoters","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"end","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_name","type":"string"},{"name":"duraitonMinutes","type":"uint256"},{"name":"canditate1","type":"string"},{"name":"canditate2","type":"string"},{"name":"canditate3","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"name","type":"string"},{"indexed":false,"name":"voteCount","type":"uint256"}],"name":"ElectionResult","type":"event"}]')
-address = web3.toChecksumAddress("0xfB6fA86D2c07F282b6631763Dac5A0c201cB5d0F")
+abi = json.loads('[{"constant":false,"inputs":[{"name":"voterIndex","type":"uint256"}],"name":"vote","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_first_name","type":"string"},{"name":"_last_name","type":"string"},{"name":"_email","type":"string"},{"name":"_username","type":"string"},{"name":"_phone_number","type":"string"},{"name":"_password","type":"string"}],"name":"register","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"auctionEnd","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"n","type":"uint256"}],"name":"result","outputs":[{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"canditates","outputs":[{"name":"name","type":"string"},{"name":"voteCount","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_username","type":"string"},{"name":"_password","type":"string"}],"name":"login","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"voter","type":"address"}],"name":"authorize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"candInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"nbOfVoters","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"end","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_address","type":"address"}],"name":"getInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_name","type":"string"},{"name":"duraitonMinutes","type":"uint256"},{"name":"canditate1","type":"string"},{"name":"canditate2","type":"string"},{"name":"canditate3","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"name","type":"string"},{"indexed":false,"name":"voteCount","type":"uint256"}],"name":"ElectionResult","type":"event"}]')
+address = web3.toChecksumAddress("0xeFE1AF1Eec58D875Ed4F11d09FC3D9B77852906e")
 
 contract = web3.eth.contract(address=address, abi=abi)
 
@@ -21,6 +23,7 @@ userDetails = []
 main_info = []
 voteCount = []
 accounts = []
+info = []
 
 def index(request):
     global userDetails
@@ -59,6 +62,8 @@ def userRegister(request):
         if password1==password2:
             tx_hash = contract.functions.register(first_name,last_name,email,username,phone_number,password1).transact()
             web3.eth.waitForTransactionReceipt(tx_hash)
+            addr = addressDB(voter_address=web3.eth.default_account)
+            addr.save()
             print('User created')
             return redirect('userLogin')
         else:
@@ -92,39 +97,34 @@ def main (request):
     global auth
     global adminLog
     global accounts
+    global info
     if adminLog:
-        # accounts = web3.eth.accounts
-        # main_info = []
-        # for i in accounts:
-        #     main_info.append([])
-        # for j in range(len(accounts)):
-        #     web3.eth.default_account = web3.eth.accounts[j]
-        #     main_info[j].append(contract.functions.getInfo().call())
-            
-        # for i in range(2):
-        #     main_info.append([])
-        #     for j in range(1):
-        #         main_info[i].append(contract.functions.getInfo().call())
-        #     print(i)
-        # web3.eth.default_account = web3.eth.accounts[0]
-        # main_info = contract.functions.getInfo().call()
-        print(main_info,auth)
+        addr = list(addressDB.objects.values_list())
+        print(addr)
+        if addr:
+            info = contract.functions.getInfo(addr[0][1]).call()
+            print(info)
+        if info:
+            return render(request, 'admin.html',{'main_info':info})
+        else:
+            return render(request, 'admin.html')
     else:
         return redirect('adminLogin')
-    if auth:
-        return render(request, 'admin.html')
-    else:
-        return render(request, 'admin.html',{'main_info':main_info,'n':len(accounts)})
+    
 
 def authorize(request):
     global main_info
     global auth
+    global info
     print(main_info)
     print(auth)
-    if main_info:
-        auth_hash = contract.functions.authorize(main_info[0][0][5]).transact()
+    if info:
+        auth_db = authoDB(auth_address=info[5], auth=1)
+        auth_db.save()
+        auth_hash = contract.functions.authorize(info[5]).transact()
         web3.eth.waitForTransactionReceipt(auth_hash)
-        auth = 1
+        addressDB.objects.filter(voter_address=info[5]).delete()
+        info = []
     return redirect('main')
 
 def autho(request):
@@ -153,25 +153,27 @@ def vote(request):
 
 def voteCast(request):
 
-    global auth
+    global authDB
     global cand
     cand -= 1
-    print(cand, auth)
-    if auth:
-        pass
+    print(cand, authDB)
+    if authDB[0][1]:
         vote_hash = contract.functions.vote(cand).transact()
         web3.eth.waitForTransactionReceipt(vote_hash)
-        auth = 0
+        authoDB.objects.filter(auth_address=web3.eth.default_account).delete()
     return redirect('vote')
 
 def conform1(request):
     global cand
     global cand_names
+    global authDB
     cand = 1
     cand_names = contract.functions.candInfo().call()
     print(cand_names)
     if userDetails:
-        if auth:
+        authDB = list(authoDB.objects.values_list())
+        print(auth)
+        if authDB[0][1]:
             return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[0]})
         else:
             return redirect('autho')
@@ -181,10 +183,13 @@ def conform1(request):
 def conform2(request):
     global cand
     global cand_names
+    global authDB
     cand = 2
     cand_names = contract.functions.candInfo().call()
     if userDetails:
-        if auth:
+        authDB = list(authoDB.objects.values_list())
+        print(auth)
+        if authDB[0][1]:
             return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[1]})
         else:
             return redirect('autho')
@@ -195,10 +200,13 @@ def conform2(request):
 def conform3(request):
     global cand
     global cand_names
+    global authDB
     cand = 3
     cand_names = contract.functions.candInfo().call()
     if userDetails:
-        if auth:
+        authDB = list(authoDB.objects.values_list())
+        print(auth)
+        if authDB[0][1]:
             return render(request, 'conform.html',{'cand':cand, 'cand_name':cand_names[2]})
         else:
             return redirect('autho')
