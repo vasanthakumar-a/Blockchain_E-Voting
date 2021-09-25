@@ -11,3 +11,5 @@ for i in lists:
 print(lists)
 for i in range(2):
     print(lists[i][0][0])
+
+"ELECTION",30,"ADMK","DMK","BJP"
